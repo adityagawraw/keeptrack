@@ -13,8 +13,8 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/section" element={<Section />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Section />} />
       </Routes>
     </div>
   );

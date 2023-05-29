@@ -5,15 +5,18 @@ import { HiArrowNarrowLeft } from "react-icons/hi";
 import styles from "./Edit.module.css";
 import { Edit } from "../../Section";
 import { Todo } from "../../../../features/todo-slice";
+
 interface Props {
   openEdit: Edit;
   setOpenEdit: Dispatch<SetStateAction<Edit>>;
+  editTodo: (todo: Todo, listIndex: number, todoIndex: number) => void;
 }
-const EditTodo = ({ openEdit, setOpenEdit }: Props) => {
+
+const EditTodo = ({ openEdit, setOpenEdit, editTodo }: Props) => {
   const [todoEditData, setTodoEditData] = useState<Todo>(openEdit?.todo);
-  useEffect(()=>{
-    setTodoEditData(openEdit?.todo)
-  }, [openEdit])
+  useEffect(() => {
+    setTodoEditData(openEdit?.todo);
+  }, [openEdit]);
   return (
     <div
       className={`${styles.editSection} ${
@@ -25,7 +28,21 @@ const EditTodo = ({ openEdit, setOpenEdit }: Props) => {
       </button>
       <Title todoEditData={todoEditData} setTodoEditData={setTodoEditData} />
       <Details todoEditData={todoEditData} setTodoEditData={setTodoEditData} />
-      <button className="bg-blue-500 text-white py-1 px-2 rounded my-2 w-full text-lg">
+      <button
+        onClick={() => {
+          editTodo(todoEditData, openEdit?.listIndex, openEdit?.todoIndex);
+          setOpenEdit({
+            open: false,
+            listIndex: -1,
+            todoIndex: -1,
+            todo: {
+              title: "",
+              details: "",
+            },
+          });
+        }}
+        className="bg-blue-500 text-white py-1 px-2 rounded my-2 w-full text-lg"
+      >
         Save
       </button>
     </div>

@@ -10,13 +10,14 @@ interface Props {
   list: TodoList;
   openEdit: Edit;
   setOpenEdit: Dispatch<SetStateAction<Edit>>;
+  addNewTodo: (todo: Todo, listIndex: number) => void;
 }
 
-const List = ({ list, index, openEdit, setOpenEdit }: Props) => {
+const List = ({ list, index, openEdit, setOpenEdit ,addNewTodo}: Props) => {
   return (
     <div className="w-full">
       <ListTitle openEdit={openEdit} index={index} title={list?.title} />
-      <AddTodo />
+      <AddTodo listIndex={index} addNewTodo={addNewTodo}/>
       {list?.list?.map((data: Todo, todoIndex: number) => (
         <TodoDetails
           todoDetails={data}

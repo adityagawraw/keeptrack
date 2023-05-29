@@ -17,20 +17,63 @@ export interface Edit {
 const Section = () => {
   const [openEdit, setOpenEdit] = useState<Edit>({
     open: false,
-    listIndex: 0,
-    todoIndex: 0,
+    listIndex: -1,
+    todoIndex: -1,
     todo: {
-      title:"",
-      details:""
-    }
+      title: "",
+      details: "",
+    },
   });
 
   const data = useAppSelector((state) => state.todo);
   const [todoData, setTodoData] = useState<Sections>(data);
 
   useEffect(() => {
-    console.log(openEdit);
-  }, [openEdit]);
+    console.log(todoData);
+  }, [todoData]);
+
+  const addNewTodo = (todo: Todo, listIndex: number) => {
+    setTodoData((prev) => {
+      let listsArr = prev?.list?.[listIndex]?.list;
+      console.log(listsArr);
+      listsArr = [todo, ...listsArr];
+      const listObj = {
+        title: prev?.list?.[listIndex]?.title,
+        list: listsArr,
+      };
+      const listArr = prev?.list?.map((data: TodoList, index: number) => {
+        if (index == listIndex) return listObj;
+        return data;
+      });
+      return { title: prev?.title, list: listArr };
+    });
+  };
+
+  const editTodo = (todo: Todo, listIndex: number, todoIndex: number) => {
+    setTodoData((prev) => {
+      let todoArr = prev?.list?.[listIndex]?.list?.map(
+        (data: Todo, index: number) => {
+          if (index == todoIndex) return todo;
+          return data;
+        }
+      );
+      let todolist = {
+        title: prev?.list?.[listIndex]?.title,
+        list: todoArr,
+      };
+      let listArr = prev?.list?.map((data: TodoList, index: number) => {
+        if (index == listIndex) return todolist;
+        return data;
+      });
+      return { title: prev?.title, list: listArr };
+    });
+  };
+
+  const addList = (listData: TodoList) => {
+    setTodoData((prev) => {
+      return { title: prev?.title, list: [listData, ...prev?.list] };
+    });
+  };
 
   return (
     <div className="">
@@ -43,7 +86,7 @@ const Section = () => {
         <div
           className={`${styles.listSection} w-full overflow-auto grid grid-cols-[1fr_1fr_1fr]  gap-2 py-2 px-2`}
         >
-          <AddList />
+          <AddList addList={addList} />
           {todoData?.list?.map((data: TodoList, index: number) => (
             <List
               key={index}
@@ -51,10 +94,15 @@ const Section = () => {
               list={data}
               openEdit={openEdit}
               setOpenEdit={setOpenEdit}
+              addNewTodo={addNewTodo}
             />
           ))}
         </div>
-        <EditTodo openEdit={openEdit} setOpenEdit={setOpenEdit} />
+        <EditTodo
+          editTodo={editTodo}
+          openEdit={openEdit}
+          setOpenEdit={setOpenEdit}
+        />
       </div>
     </div>
   );
